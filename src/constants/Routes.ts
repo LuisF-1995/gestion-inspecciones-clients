@@ -3,8 +3,8 @@ import { LoginComponent } from "../app/pages/login/login.component";
 import { RegisterComponent } from "../app/pages/register/register.component";
 
 export const login = {
-  path:"",
-  tittle: "Login",
+  path:"login",
+  title: "Login",
   component: LoginComponent
 }
 

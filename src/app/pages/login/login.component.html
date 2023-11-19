@@ -1,1 +1,32 @@
-<p>login works!</p>
+
+
+<br>
+<section>
+  <a [routerLink]="dashboardUrl">ir al dashboard</a>
+</section>
+
+
+<main class="login-container">
+  <div class="card">
+    <section class="card-header">
+      <h2>Login</h2>
+    </section>
+    <section class="card-body">
+      <form>
+        <div class="mb-3">
+          <label for="inputEmail" class="form-label">Correo Electrónico</label>
+          <input type="email" class="form-control" id="inputEmail" placeholder="nombre@ejemplo.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="inputPassword" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="inputPassword" placeholder="Contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+      </form>
+    </section>
+    <section class="register-client">
+      <p>¿No estas registrado?</p>
+      <a [routerLink]="registerUrl">Register</a>
+    </section>
+  </div>
+</main>

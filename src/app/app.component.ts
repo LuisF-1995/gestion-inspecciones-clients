@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { dashboard, login, register } from '../constants/Routes';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +10,4 @@ import { dashboard, login, register } from '../constants/Routes';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = "Test title";
-  registerUrl = register.path;
-  loginUrl = login.path;
-  dashboardUrl = dashboard.path;
 }
