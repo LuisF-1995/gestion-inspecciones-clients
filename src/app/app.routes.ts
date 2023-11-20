@@ -7,11 +7,6 @@ export const routes: Routes = [
   register,
   dashboard,
   {
-    path: '',
-    redirectTo: `/${login.path}`,
-    pathMatch:'full'
-  },
-  {
     path:'**',
     component:ErrorPageComponent
   }
