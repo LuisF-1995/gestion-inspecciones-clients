@@ -1,1 +1,1 @@
-export const gestionInspeccionesUrl:string = "http://localhost:8080/";
+export const gestionInspeccionesUrl:string = "http://localhost:8080";

@@ -5,76 +5,80 @@ import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/login/auth.service';
 import { FormsModule } from '@angular/forms';
 import { ValidateDataService } from '../../services/form-validation/validate-data.service';
+import { gestionInspeccionesUrl } from '../../../constants/Api';
+import Swal from 'sweetalert2';
+import { SpinnerComponent } from '../../components/spinner/spinner.component';
+
 
 @Component({
   selector: 'page-login',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, SpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
 
-  constructor(private validateDataService: ValidateDataService,private authService: AuthService, private router: Router) {
+  constructor(private validateDataService: ValidateDataService, private authService: AuthService, private router: Router) {
   }
 
+  apiUrl:string = gestionInspeccionesUrl;
   registerUrl:string = register.path;
   dashboardUrl:string = dashboard.path;
-  email:string = "";
-  password:string = "";
+  loginData = {
+    email:"",
+    password:""
+  }
   isValidMail:boolean = false;
   errorMessage:string = "";
-
-  identifyMailErrors(): void {
-    const emailParts = this.email.split('@');
-
-    if (emailParts.length !== 2) {
-      this.errorMessage = 'Error: El correo electrónico debe contener un solo "@"';
-      return;
-    }
-
-    const [username, domain] = emailParts;
-
-    if (username === '' || domain === '') {
-      this.errorMessage = 'Error: El nombre de usuario o el dominio no pueden estar vacíos';
-      return;
-    }
-
-    const domainParts = domain.split('.');
-
-    if (domainParts.length < 2) {
-      this.errorMessage = 'Error: El dominio debe contener al menos un punto (.)';
-      return;
-    }
-
-    const topLevelDomain = domainParts[domainParts.length - 1];
-
-    if (topLevelDomain.length < 2 || topLevelDomain.length > 6) {
-      this.errorMessage = 'Error: La parte superior del dominio debe tener entre 2 y 6 caracteres';
-      return;
-    }
-
-    this.errorMessage = 'Error: Otra condición de validación no cumplida';
-  }
+  showSpinner:boolean = false;
+  spinnerMessage:string = '';
 
 
-  login(){
-    const validEmail:boolean = this.validateDataService.validateEmail(this.email);
-    this.errorMessage = this.validateDataService.identifyMailErrors(this.email);
+  async login(){
+    this.showSpinner = true;
+    this.spinnerMessage = 'Validando email ...';
+    const validEmail:boolean = this.validateDataService.validateEmail(this.loginData.email);
 
-    if(this.email.length > 0 && validEmail && this.password.length > 0){
-      const isAuthenticated = this.authService.login(this.email, this.password);
+    if(this.loginData.email.length > 0 && validEmail && this.loginData.password.length > 0){
+      this.spinnerMessage = 'Verificando credenciales ...';
+      const clientExists = await this.authService.verifyClientExists(this.apiUrl, "clientes/verifyByEmail", this.loginData);
+      const loginResponse = await this.authService.login(this.apiUrl, "clientes/login", this.loginData);
 
-      if (isAuthenticated) {
-        this.router.navigateByUrl(dashboard.path);
+      if (loginResponse.success) {
+        this.router.navigateByUrl(this.dashboardUrl);
+      }
+      else if(clientExists){
+        this.showSpinner = false;
+        Swal.fire({
+          title: 'Credenciales erróneas!',
+          text: `Favor validar la información ingresada`,
+          icon: 'error',
+        })
       }
       else {
-        console.log('Autenticación fallida');
+        this.showSpinner = false;
+        this.errorMessage = loginResponse.message ? loginResponse.message : '';
+        Swal.fire({
+          title: 'No se pudo iniciar sesión!',
+          text: this.errorMessage,
+          icon: 'error',
+          confirmButtonText: 'Ir a registrarme',
+          showCancelButton:true,
+          cancelButtonText: 'Cerrar'
+        })
+        .then(event => {
+          if(event.isConfirmed){
+            this.router.navigateByUrl(this.registerUrl);
+          }
+        })
       }
     }
     else{
-      console.log(this.errorMessage);
+      this.showSpinner = false;
+      this.errorMessage = this.validateDataService.identifyMailErrors(this.loginData.email);
     }
   }
+
 }
