@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { dashboard, register } from '../../../constants/Routes';
 import { RouterLink, Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { ValidateDataService } from '../../services/form-validation/validate-dat
 import { gestionInspeccionesUrl } from '../../../constants/Api';
 import Swal from 'sweetalert2';
 import { SpinnerComponent } from '../../components/spinner/spinner.component';
+import { DashboardService } from '../../services/dashboard/dashboard.service';
+import { localTokenKeyName, localUserIdKeyName } from '../../../constants/GlobalData';
 
 
 @Component({
@@ -18,9 +20,15 @@ import { SpinnerComponent } from '../../components/spinner/spinner.component';
   styleUrl: './login.component.scss'
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-  constructor(private validateDataService: ValidateDataService, private authService: AuthService, private router: Router) {
+  constructor(private validateDataService: ValidateDataService, private authService: AuthService, private router: Router, private dashBoardService:DashboardService) {
+  }
+
+  ngOnInit(): void {
+    if(typeof(window) !== 'undefined' && localStorage && localStorage.length > 0 && localStorage.getItem(localTokenKeyName) && localStorage.getItem(localUserIdKeyName)){
+      this.router.navigateByUrl(dashboard.path);
+    }
   }
 
   apiUrl:string = gestionInspeccionesUrl;

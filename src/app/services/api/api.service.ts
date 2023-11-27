@@ -10,48 +10,48 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   get(apiUrl:string, endpoint: string, token?:string): Observable<any> {
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     if(token && token.length > 0){
-      headers.append('Authorization', `Bearer ${token}`);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
     return this.http.get<any>(`${apiUrl}/${endpoint}`, { headers: headers });
   }
 
   post(apiUrl:string, endpoint: string, data: any, token?:string): Observable<any> {
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     if(token && token.length > 0){
-      headers.append('Authorization', `Bearer ${token}`);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
     return this.http.post<any>(`${apiUrl}/${endpoint}`, data, { headers: headers });
   }
 
   put(apiUrl:string, endpoint: string, data: any, token?:string): Observable<any> {
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     if(token && token.length > 0){
-      headers.append('Authorization', `Bearer ${token}`);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
     return this.http.put<any>(`${apiUrl}/${endpoint}`, data, { headers: headers });
   }
 
   delete(apiUrl:string, endpoint: string, token?:string): Observable<any> {
-    const headers = new HttpHeaders({
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     if(token && token.length > 0){
-      headers.append('Authorization', `Bearer ${token}`);
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
 
     return this.http.delete<any>(`${apiUrl}/${endpoint}`, { headers: headers });
